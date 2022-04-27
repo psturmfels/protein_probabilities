@@ -1,0 +1,3 @@
+[submodule "protein-embedding-retrieval"]
+	path = protein-embedding-retrieval
+	url = git@github.com:googleinterns/protein-embedding-retrieval.git
