@@ -21,21 +21,9 @@ from contextual_lenses.train_utils import create_data_iterator, \
     create_optimizer, create_representation_model, train
 from contextual_lenses.encoders import cnn_one_hot_encoder
 from contextual_lenses.contextual_lenses import max_pool, linear_max_pool
-from protein_lm import domains
 from tape.datasets import LMDBDataset
 
 from utils import *
-
-GFP_SEQ_LEN = 237
-GFP_AMINO_ACID_VOCABULARY = [
-    'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R',
-    'S', 'T', 'V', 'W', 'Y', '-'
-]
-GFP_PROTEIN_DOMAIN = domains.VariableLengthDiscreteDomain(
-    vocab=domains.ProteinVocab(include_anomalous_amino_acids=False,
-                               include_eos=True,
-                               include_pad=True),
-    length=GFP_SEQ_LEN)
 
 
 def create_parser():
@@ -69,6 +57,19 @@ def create_gfp_df(test=False):
 
     gfp_df['one_hot_inds'] = gfp_df.primary.apply(lambda x: gfp_seq_to_inds(x[:GFP_SEQ_LEN]))
 
+
+    return gfp_df
+
+
+
+def compute_esm_column(gfp_df,
+                       max_token_count=10000,
+                       rep_layer='logits'):
+    sequences = gfp_df['primary'].tolist()
+    outputs = compute_esm_embeddings(sequences,
+                                     max_token_count,
+                                     rep_layer)
+    gfp_df['embeddings'] = outputs
     return gfp_df
 
 
