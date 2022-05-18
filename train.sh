@@ -5,7 +5,7 @@ fairseq-train \
   --dataset-impl fasta \
   --task masked_lm \
   --criterion masked_lm \
-  --arch perceiver \
+  --arch perceiver_mini \
   --max-tokens 1096 \
   --update-freq 1 \
   --lr 1e-4 \
@@ -13,6 +13,6 @@ fairseq-train \
   --lr-scheduler inverse_sqrt \
   --warmup-updates 16000 \
   --skip-invalid-size-inputs-valid-test \
-  --max-valid-steps 20 \
+  --max-epoch 1 \
   --validate-interval-updates 5000 \
   --save-interval-updates 5000;

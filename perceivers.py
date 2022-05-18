@@ -78,7 +78,13 @@ class PerceiverEncoder(FairseqEncoder):
     def __init__(self, args, dictionary):
         super().__init__(dictionary)
 
-        self.config = PerceiverConfig(**args)
+        self.config = PerceiverConfig(num_latents=args.num_latents,
+                                      d_latents=args.d_latents,
+                                      d_model=args.d_model,
+                                      num_blocks=args.num_blocks,
+                                      num_self_attends_per_block=args.num_self_attends_per_block,
+                                      num_self_attention_heads=args.num_self_attention_heads,
+                                      num_cross_attention_heads=args.num_cross_attention_heads)
         self.model = PerceiverForMaskedLM(config=self.config)
 
     def forward(
@@ -101,6 +107,17 @@ def base_architecture(args):
     args.num_self_attends_per_block = getattr(args, 'num_self_attends_per_block', 26)
     args.num_self_attention_heads = getattr(args, 'num_self_attention_heads', 8)
     args.num_cross_attention_heads = getattr(args, 'num_cross_attention_heads', 8)
+
+
+@register_model_architecture('perceiver', 'perceiver_mini')
+def base_architecture(args):
+    args.num_latents = getattr(args, 'num_latents', 16)
+    args.d_latents = getattr(args, 'd_latents', 32)
+    args.d_model = getattr(args, 'd_model', 64)
+    args.num_blocks = getattr(args, 'num_blocks', 1)
+    args.num_self_attends_per_block = getattr(args, 'num_self_attends_per_block', 8)
+    args.num_self_attention_heads = getattr(args, 'num_self_attention_heads', 4)
+    args.num_cross_attention_heads = getattr(args, 'num_cross_attention_heads', 4)
 
 
 def main():
